@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../app_context.dart';
@@ -6,6 +6,7 @@ import 'app_navigation.dart';
 import 'app_route_config.dart';
 import 'route_repository.dart';
 
+part 'routes/auth_routes.dart';
 part 'routes/home_routes.dart';
 
 abstract final class AppRouter {
@@ -14,11 +15,17 @@ abstract final class AppRouter {
   @visibleForTesting
   static set router(GoRouter router) => _router = router;
 
-  static GoRouter init(AppRouteConfig initialLocation) {
+  static GoRouter init(
+    AppRouteConfig initialLocation, {
+    String? Function(BuildContext, GoRouterState)? redirect,
+    Listenable? refreshListenable,
+  }) {
     return _router = GoRouter(
-      routes: _routes,
+      routes: [..._authRoutes, ..._routes],
       initialLocation: initialLocation.path,
       navigatorKey: AppContext.navigatorKey,
+      redirect: redirect,
+      refreshListenable: refreshListenable,
     );
   }
 

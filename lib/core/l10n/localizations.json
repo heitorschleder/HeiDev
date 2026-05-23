@@ -10,6 +10,11 @@
         "pt": "Olá, mundo!",
         "en": "Hello, world!",
         "es": "¡Hola, mundo!"
+      },
+      "logout": {
+        "pt": "Sair",
+        "en": "Sign out",
+        "es": "Cerrar sesión"
       }
     },
     "appGeneral": {
@@ -27,6 +32,85 @@
         "pt": "Tentar novamente",
         "en": "Try again",
         "es": "Reintentar"
+      }
+    },
+    "authLogin": {
+      "title": {
+        "pt": "Entrar",
+        "en": "Sign in",
+        "es": "Iniciar sesión"
+      },
+      "email": {
+        "pt": "E-mail",
+        "en": "Email",
+        "es": "Correo"
+      },
+      "password": {
+        "pt": "Senha",
+        "en": "Password",
+        "es": "Contraseña"
+      },
+      "submitButton": {
+        "pt": "Entrar",
+        "en": "Sign in",
+        "es": "Entrar"
+      },
+      "noAccount": {
+        "pt": "Não tem conta?",
+        "en": "Don't have an account?",
+        "es": "¿No tienes cuenta?"
+      },
+      "signupLink": {
+        "pt": "Cadastre-se",
+        "en": "Sign up",
+        "es": "Regístrate"
+      }
+    },
+    "authSignup": {
+      "title": {
+        "pt": "Criar conta",
+        "en": "Create account",
+        "es": "Crear cuenta"
+      },
+      "email": {
+        "pt": "E-mail",
+        "en": "Email",
+        "es": "Correo"
+      },
+      "password": {
+        "pt": "Senha",
+        "en": "Password",
+        "es": "Contraseña"
+      },
+      "confirmPassword": {
+        "pt": "Confirmar senha",
+        "en": "Confirm password",
+        "es": "Confirmar contraseña"
+      },
+      "submitButton": {
+        "pt": "Criar conta",
+        "en": "Create account",
+        "es": "Crear cuenta"
+      },
+      "hasAccount": {
+        "pt": "Já tem conta?",
+        "en": "Already have an account?",
+        "es": "¿Ya tienes cuenta?"
+      },
+      "loginLink": {
+        "pt": "Entrar",
+        "en": "Sign in",
+        "es": "Iniciar sesión"
+      },
+      "passwordMismatch": {
+        "pt": "As senhas não coincidem.",
+        "en": "Passwords do not match.",
+        "es": "Las contraseñas no coinciden."
+      },
+      "confirmationPending": {
+        "pt": "Confira seu e-mail para ativar sua conta.",
+        "en": "Check your email to activate your account.",
+        "es": "Revisa tu correo para activar tu cuenta."
       }
     }
   }
