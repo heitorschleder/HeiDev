@@ -1,0 +1,33 @@
+{
+  "localizations": {
+    "homeScreen": {
+      "title": {
+        "pt": "Início",
+        "en": "Home",
+        "es": "Inicio"
+      },
+      "greeting": {
+        "pt": "Olá, mundo!",
+        "en": "Hello, world!",
+        "es": "¡Hola, mundo!"
+      }
+    },
+    "appGeneral": {
+      "loading": {
+        "pt": "Carregando...",
+        "en": "Loading...",
+        "es": "Cargando..."
+      },
+      "error": {
+        "pt": "Algo deu errado. Tente novamente.",
+        "en": "Something went wrong. Please try again.",
+        "es": "Algo salió mal. Inténtalo de nuevo."
+      },
+      "retry": {
+        "pt": "Tentar novamente",
+        "en": "Try again",
+        "es": "Reintentar"
+      }
+    }
+  }
+}

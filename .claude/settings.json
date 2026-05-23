@@ -1,0 +1,35 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/scripts/fvm-guardrail.sh",
+            "timeout": 30,
+            "statusMessage": "Checking FVM setup..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath' | { read -r f; case \"$f\" in *.dart) fvm dart format --line-length 120 \"$f\" ;; esac; } 2>/dev/null || true",
+            "timeout": 15,
+            "statusMessage": "Formatting..."
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath' | { read -r f; case \"$f\" in *.dart) fvm flutter analyze \"$f\" ;; esac; } 2>/dev/null || true",
+            "timeout": 60,
+            "statusMessage": "Analyzing..."
+          }
+        ]
+      }
+    ]
+  }
+}
