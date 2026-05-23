@@ -1,117 +1,118 @@
 {
   "localizations": {
+    "nav": {
+      "dashboard": { "pt": "Início", "en": "Home", "es": "Inicio" },
+      "expenses":  { "pt": "Despesas", "en": "Expenses", "es": "Gastos" },
+      "income":    { "pt": "Renda", "en": "Income", "es": "Ingresos" }
+    },
     "homeScreen": {
-      "title": {
-        "pt": "Início",
-        "en": "Home",
-        "es": "Inicio"
-      },
-      "greeting": {
-        "pt": "Olá, mundo!",
-        "en": "Hello, world!",
-        "es": "¡Hola, mundo!"
-      },
-      "logout": {
-        "pt": "Sair",
-        "en": "Sign out",
-        "es": "Cerrar sesión"
-      }
+      "title":   { "pt": "Início", "en": "Home", "es": "Inicio" },
+      "greeting": { "pt": "Olá, mundo!", "en": "Hello, world!", "es": "¡Hola, mundo!" },
+      "logout":  { "pt": "Sair", "en": "Sign out", "es": "Cerrar sesión" }
+    },
+    "dashboard": {
+      "title":          { "pt": "Resumo", "en": "Summary", "es": "Resumen" },
+      "income":         { "pt": "Renda bruta", "en": "Gross income", "es": "Ingreso bruto" },
+      "totalExpenses":  { "pt": "Total de despesas", "en": "Total expenses", "es": "Total gastos" },
+      "paid":           { "pt": "Pago", "en": "Paid", "es": "Pagado" },
+      "open":           { "pt": "Em aberto", "en": "Open", "es": "Pendiente" },
+      "balance":        { "pt": "Sobra", "en": "Balance", "es": "Saldo" },
+      "committed":      { "pt": "Comprometido", "en": "Committed", "es": "Comprometido" },
+      "dueSoon":        { "pt": "Vencem em breve", "en": "Due soon", "es": "Próximos vencimientos" },
+      "noIncome":       { "pt": "Cadastre sua renda para ver o resumo.", "en": "Register your income to see the summary.", "es": "Registra tu ingreso para ver el resumen." },
+      "noExpenses":     { "pt": "Nenhuma despesa este mês.", "en": "No expenses this month.", "es": "Sin gastos este mes." },
+      "addExpense":     { "pt": "Lançar despesa", "en": "Add expense", "es": "Agregar gasto" }
+    },
+    "income": {
+      "title":        { "pt": "Renda", "en": "Income", "es": "Ingresos" },
+      "type":         { "pt": "Tipo de vínculo", "en": "Employment type", "es": "Tipo de empleo" },
+      "clt":          { "pt": "CLT", "en": "CLT", "es": "CLT" },
+      "pj":           { "pt": "PJ", "en": "PJ", "es": "PJ" },
+      "autonomo":     { "pt": "Autônomo", "en": "Freelancer", "es": "Autónomo" },
+      "grossSalary":  { "pt": "Salário bruto", "en": "Gross salary", "es": "Salario bruto" },
+      "vr":           { "pt": "Vale Refeição (VR)", "en": "Meal voucher (VR)", "es": "Vale comida (VR)" },
+      "vrAmount":     { "pt": "Valor do VR", "en": "VR amount", "es": "Monto VR" },
+      "va":           { "pt": "Vale Alimentação (VA)", "en": "Food voucher (VA)", "es": "Vale alimentación (VA)" },
+      "vaAmount":     { "pt": "Valor do VA", "en": "VA amount", "es": "Monto VA" },
+      "commission":   { "pt": "Comissão", "en": "Commission", "es": "Comisión" },
+      "bonus":        { "pt": "Bonificação", "en": "Bonus", "es": "Bonificación" },
+      "otherIncome":  { "pt": "Outros ganhos", "en": "Other income", "es": "Otros ingresos" },
+      "totalIncome":  { "pt": "Renda total", "en": "Total income", "es": "Ingreso total" },
+      "save":         { "pt": "Salvar renda", "en": "Save income", "es": "Guardar ingreso" },
+      "noIncome":     { "pt": "Nenhuma renda cadastrada.", "en": "No income registered.", "es": "Sin ingreso registrado." },
+      "savedSuccess": { "pt": "Renda salva com sucesso!", "en": "Income saved!", "es": "¡Ingreso guardado!" }
+    },
+    "expense": {
+      "title":         { "pt": "Despesas", "en": "Expenses", "es": "Gastos" },
+      "newExpense":    { "pt": "Nova despesa", "en": "New expense", "es": "Nuevo gasto" },
+      "editExpense":   { "pt": "Editar despesa", "en": "Edit expense", "es": "Editar gasto" },
+      "expenseName":   { "pt": "Nome da despesa", "en": "Expense name", "es": "Nombre del gasto" },
+      "amount":        { "pt": "Valor", "en": "Amount", "es": "Monto" },
+      "dueDate":       { "pt": "Vencimento", "en": "Due date", "es": "Vencimiento" },
+      "paid":          { "pt": "Pago", "en": "Paid", "es": "Pagado" },
+      "unpaid":        { "pt": "Em aberto", "en": "Unpaid", "es": "Pendiente" },
+      "markPaid":      { "pt": "Marcar como pago", "en": "Mark as paid", "es": "Marcar como pagado" },
+      "markUnpaid":    { "pt": "Marcar como em aberto", "en": "Mark as unpaid", "es": "Marcar como pendiente" },
+      "essential":     { "pt": "Essencial", "en": "Essential", "es": "Esencial" },
+      "notEssential":  { "pt": "Não essencial", "en": "Not essential", "es": "No esencial" },
+      "notes":         { "pt": "Observações", "en": "Notes", "es": "Notas" },
+      "delete":        { "pt": "Excluir", "en": "Delete", "es": "Eliminar" },
+      "deleteConfirm": { "pt": "Excluir despesa?", "en": "Delete expense?", "es": "¿Eliminar gasto?" },
+      "noExpenses":    { "pt": "Nenhuma despesa este mês.", "en": "No expenses this month.", "es": "Sin gastos este mes." },
+      "save":          { "pt": "Salvar", "en": "Save", "es": "Guardar" },
+      "category":      { "pt": "Categoria", "en": "Category", "es": "Categoría" },
+      "priority":      { "pt": "Prioridade", "en": "Priority", "es": "Prioridad" },
+      "useTemplate":   { "pt": "Usar modelo", "en": "Use template", "es": "Usar plantilla" },
+      "catCasa":        { "pt": "Casa", "en": "Housing", "es": "Hogar" },
+      "catTransporte":  { "pt": "Transporte", "en": "Transport", "es": "Transporte" },
+      "catAlimentacao": { "pt": "Alimentação", "en": "Food", "es": "Alimentación" },
+      "catSaude":       { "pt": "Saúde", "en": "Health", "es": "Salud" },
+      "catLazer":       { "pt": "Lazer", "en": "Leisure", "es": "Ocio" },
+      "catImpostos":    { "pt": "Impostos", "en": "Taxes", "es": "Impuestos" },
+      "catOutros":      { "pt": "Outros", "en": "Others", "es": "Otros" },
+      "prioAlta":       { "pt": "Alta", "en": "High", "es": "Alta" },
+      "prioMedia":      { "pt": "Média", "en": "Medium", "es": "Media" },
+      "prioBaixa":      { "pt": "Baixa", "en": "Low", "es": "Baja" }
+    },
+    "billTemplates": {
+      "title":         { "pt": "Modelos de contas", "en": "Bill templates", "es": "Plantillas" },
+      "newTemplate":   { "pt": "Novo modelo", "en": "New template", "es": "Nueva plantilla" },
+      "editTemplate":  { "pt": "Editar modelo", "en": "Edit template", "es": "Editar plantilla" },
+      "defaultAmount": { "pt": "Valor padrão", "en": "Default amount", "es": "Monto predeterminado" },
+      "noTemplates":   { "pt": "Nenhum modelo cadastrado.", "en": "No templates registered.", "es": "Sin plantillas." },
+      "saveTemplate":  { "pt": "Salvar modelo", "en": "Save template", "es": "Guardar plantilla" },
+      "deleteConfirm": { "pt": "Excluir modelo?", "en": "Delete template?", "es": "¿Eliminar plantilla?" },
+      "selectToLaunch":{ "pt": "Selecione modelos para lançar", "en": "Select templates to launch", "es": "Selecciona plantillas" },
+      "launchSelected":{ "pt": "Lançar selecionados", "en": "Launch selected", "es": "Lanzar seleccionados" }
     },
     "appGeneral": {
-      "loading": {
-        "pt": "Carregando...",
-        "en": "Loading...",
-        "es": "Cargando..."
-      },
-      "error": {
-        "pt": "Algo deu errado. Tente novamente.",
-        "en": "Something went wrong. Please try again.",
-        "es": "Algo salió mal. Inténtalo de nuevo."
-      },
-      "retry": {
-        "pt": "Tentar novamente",
-        "en": "Try again",
-        "es": "Reintentar"
-      }
+      "loading": { "pt": "Carregando...", "en": "Loading...", "es": "Cargando..." },
+      "error":   { "pt": "Algo deu errado. Tente novamente.", "en": "Something went wrong. Please try again.", "es": "Algo salió mal. Inténtalo de nuevo." },
+      "retry":   { "pt": "Tentar novamente", "en": "Try again", "es": "Reintentar" },
+      "cancel":  { "pt": "Cancelar", "en": "Cancel", "es": "Cancelar" },
+      "confirm": { "pt": "Confirmar", "en": "Confirm", "es": "Confirmar" },
+      "delete":  { "pt": "Excluir", "en": "Delete", "es": "Eliminar" },
+      "yes":     { "pt": "Sim", "en": "Yes", "es": "Sí" },
+      "no":      { "pt": "Não", "en": "No", "es": "No" }
     },
     "authLogin": {
-      "title": {
-        "pt": "Entrar",
-        "en": "Sign in",
-        "es": "Iniciar sesión"
-      },
-      "email": {
-        "pt": "E-mail",
-        "en": "Email",
-        "es": "Correo"
-      },
-      "password": {
-        "pt": "Senha",
-        "en": "Password",
-        "es": "Contraseña"
-      },
-      "submitButton": {
-        "pt": "Entrar",
-        "en": "Sign in",
-        "es": "Entrar"
-      },
-      "noAccount": {
-        "pt": "Não tem conta?",
-        "en": "Don't have an account?",
-        "es": "¿No tienes cuenta?"
-      },
-      "signupLink": {
-        "pt": "Cadastre-se",
-        "en": "Sign up",
-        "es": "Regístrate"
-      }
+      "title":        { "pt": "Entrar", "en": "Sign in", "es": "Iniciar sesión" },
+      "email":        { "pt": "E-mail", "en": "Email", "es": "Correo" },
+      "password":     { "pt": "Senha", "en": "Password", "es": "Contraseña" },
+      "submitButton": { "pt": "Entrar", "en": "Sign in", "es": "Entrar" },
+      "noAccount":    { "pt": "Não tem conta?", "en": "Don't have an account?", "es": "¿No tienes cuenta?" },
+      "signupLink":   { "pt": "Cadastre-se", "en": "Sign up", "es": "Regístrate" }
     },
     "authSignup": {
-      "title": {
-        "pt": "Criar conta",
-        "en": "Create account",
-        "es": "Crear cuenta"
-      },
-      "email": {
-        "pt": "E-mail",
-        "en": "Email",
-        "es": "Correo"
-      },
-      "password": {
-        "pt": "Senha",
-        "en": "Password",
-        "es": "Contraseña"
-      },
-      "confirmPassword": {
-        "pt": "Confirmar senha",
-        "en": "Confirm password",
-        "es": "Confirmar contraseña"
-      },
-      "submitButton": {
-        "pt": "Criar conta",
-        "en": "Create account",
-        "es": "Crear cuenta"
-      },
-      "hasAccount": {
-        "pt": "Já tem conta?",
-        "en": "Already have an account?",
-        "es": "¿Ya tienes cuenta?"
-      },
-      "loginLink": {
-        "pt": "Entrar",
-        "en": "Sign in",
-        "es": "Iniciar sesión"
-      },
-      "passwordMismatch": {
-        "pt": "As senhas não coincidem.",
-        "en": "Passwords do not match.",
-        "es": "Las contraseñas no coinciden."
-      },
-      "confirmationPending": {
-        "pt": "Confira seu e-mail para ativar sua conta.",
-        "en": "Check your email to activate your account.",
-        "es": "Revisa tu correo para activar tu cuenta."
-      }
+      "title":               { "pt": "Criar conta", "en": "Create account", "es": "Crear cuenta" },
+      "email":               { "pt": "E-mail", "en": "Email", "es": "Correo" },
+      "password":            { "pt": "Senha", "en": "Password", "es": "Contraseña" },
+      "confirmPassword":     { "pt": "Confirmar senha", "en": "Confirm password", "es": "Confirmar contraseña" },
+      "submitButton":        { "pt": "Criar conta", "en": "Create account", "es": "Crear cuenta" },
+      "hasAccount":          { "pt": "Já tem conta?", "en": "Already have an account?", "es": "¿Ya tienes cuenta?" },
+      "loginLink":           { "pt": "Entrar", "en": "Sign in", "es": "Iniciar sesión" },
+      "passwordMismatch":    { "pt": "As senhas não coincidem.", "en": "Passwords do not match.", "es": "Las contraseñas no coinciden." },
+      "confirmationPending": { "pt": "Confira seu e-mail para ativar sua conta.", "en": "Check your email to activate your account.", "es": "Revisa tu correo para activar tu cuenta." }
     }
   }
 }

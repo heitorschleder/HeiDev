@@ -1,18 +1,29 @@
 import 'package:equatable/equatable.dart';
 
+import '../../data/models/dashboard_data.dart';
+
 class HomeState extends Equatable {
   final bool isLoading;
+  final DashboardData? dashboard;
   final String? errorMessage;
 
-  const HomeState({this.isLoading = false, this.errorMessage});
+  const HomeState({this.isLoading = false, this.dashboard, this.errorMessage});
 
-  factory HomeState.initial() => const HomeState();
+  factory HomeState.initial() => const HomeState(isLoading: true);
 
-  HomeState copyWith({bool? isLoading, String? errorMessage, bool resetError = false}) => HomeState(
-    isLoading: isLoading ?? this.isLoading,
-    errorMessage: resetError ? null : errorMessage ?? this.errorMessage,
-  );
+  HomeState copyWith({
+    bool? isLoading,
+    DashboardData? dashboard,
+    String? errorMessage,
+    bool resetError = false,
+  }) {
+    return HomeState(
+      isLoading: isLoading ?? this.isLoading,
+      dashboard: dashboard ?? this.dashboard,
+      errorMessage: resetError ? null : errorMessage ?? this.errorMessage,
+    );
+  }
 
   @override
-  List<Object?> get props => [isLoading, errorMessage];
+  List<Object?> get props => [isLoading, dashboard, errorMessage];
 }

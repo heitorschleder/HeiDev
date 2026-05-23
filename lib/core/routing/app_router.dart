@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../app_context.dart';
+import '../../commons/widgets/app_shell.dart';
 import 'app_navigation.dart';
 import 'app_route_config.dart';
 import 'route_repository.dart';
@@ -21,7 +22,7 @@ abstract final class AppRouter {
     Listenable? refreshListenable,
   }) {
     return _router = GoRouter(
-      routes: [..._authRoutes, ..._routes],
+      routes: [..._authRoutes, _shellRoute],
       initialLocation: initialLocation.path,
       navigatorKey: AppContext.navigatorKey,
       redirect: redirect,
