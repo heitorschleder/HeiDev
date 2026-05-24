@@ -18,14 +18,12 @@ class IncomeViewModel {
 
   Future<void> init() async {
     _state.value = IncomeState.initial();
-    try {
-      final income = await _repository.fetchIncome();
-      _state.value = _state.value.copyWith(isLoading: false, income: income, resetError: true);
-    } on AppNetworkException catch (e) {
-      _state.value = _state.value.copyWith(isLoading: false, errorMessage: e.message);
-    } catch (_) {
-      _state.value = _state.value.copyWith(isLoading: false, errorMessage: 'Erro ao carregar renda.');
-    }
+    await _load(_state.value.selectedMonth);
+  }
+
+  Future<void> changeMonth(DateTime month) async {
+    _state.value = _state.value.copyWith(selectedMonth: month, isLoading: true, clearIncome: true);
+    await _load(month);
   }
 
   Future<void> save({
@@ -38,6 +36,7 @@ class IncomeViewModel {
     required double commission,
     required double bonus,
     required double otherIncome,
+    required DateTime effectiveFrom,
   }) async {
     _state.value = _state.value.copyWith(isSaving: true, resetError: true);
     try {
@@ -51,13 +50,55 @@ class IncomeViewModel {
         commission: commission,
         bonus: bonus,
         otherIncome: otherIncome,
+        effectiveFrom: effectiveFrom,
       );
-      await init();
+      await _load(_state.value.selectedMonth);
       _state.value = _state.value.copyWith(isSaving: false, savedSuccess: true);
     } on AppNetworkException catch (e) {
       _state.value = _state.value.copyWith(isSaving: false, errorMessage: e.message);
     } catch (_) {
       _state.value = _state.value.copyWith(isSaving: false, errorMessage: 'Erro ao salvar renda.');
+    }
+  }
+
+  Future<void> addEvent({required String description, required double amount}) async {
+    _state.value = _state.value.copyWith(isSavingEvent: true, resetError: true);
+    try {
+      await _repository.saveEvent(
+        month: _state.value.selectedMonth,
+        description: description,
+        amount: amount,
+      );
+      final events = await _repository.fetchEvents(month: _state.value.selectedMonth);
+      _state.value = _state.value.copyWith(isSavingEvent: false, events: events);
+    } on AppNetworkException catch (e) {
+      _state.value = _state.value.copyWith(isSavingEvent: false, errorMessage: e.message);
+    } catch (_) {
+      _state.value = _state.value.copyWith(isSavingEvent: false, errorMessage: 'Erro ao salvar entrada.');
+    }
+  }
+
+  Future<void> deleteEvent(String id) async {
+    try {
+      await _repository.deleteEvent(id);
+      final events = await _repository.fetchEvents(month: _state.value.selectedMonth);
+      _state.value = _state.value.copyWith(events: events);
+    } on AppNetworkException catch (e) {
+      _state.value = _state.value.copyWith(errorMessage: e.message);
+    } catch (_) {
+      _state.value = _state.value.copyWith(errorMessage: 'Erro ao excluir entrada.');
+    }
+  }
+
+  Future<void> _load(DateTime month) async {
+    try {
+      final income = await _repository.fetchIncome(month: month);
+      final events = await _repository.fetchEvents(month: month);
+      _state.value = _state.value.copyWith(isLoading: false, income: income, events: events, resetError: true);
+    } on AppNetworkException catch (e) {
+      _state.value = _state.value.copyWith(isLoading: false, errorMessage: e.message);
+    } catch (_) {
+      _state.value = _state.value.copyWith(isLoading: false, errorMessage: 'Erro ao carregar renda.');
     }
   }
 

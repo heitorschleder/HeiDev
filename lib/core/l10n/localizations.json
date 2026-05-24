@@ -21,7 +21,8 @@
       "dueSoon":        { "pt": "Vencem em breve", "en": "Due soon", "es": "Próximos vencimientos" },
       "noIncome":       { "pt": "Cadastre sua renda para ver o resumo.", "en": "Register your income to see the summary.", "es": "Registra tu ingreso para ver el resumen." },
       "noExpenses":     { "pt": "Nenhuma despesa este mês.", "en": "No expenses this month.", "es": "Sin gastos este mes." },
-      "addExpense":     { "pt": "Lançar despesa", "en": "Add expense", "es": "Agregar gasto" }
+      "addExpense":     { "pt": "Lançar despesa", "en": "Add expense", "es": "Agregar gasto" },
+      "monthlyHistory": { "pt": "Histórico (6 meses)", "en": "History (6 months)", "es": "Historial (6 meses)" }
     },
     "income": {
       "title":        { "pt": "Renda", "en": "Income", "es": "Ingresos" },
@@ -40,7 +41,16 @@
       "totalIncome":  { "pt": "Renda total", "en": "Total income", "es": "Ingreso total" },
       "save":         { "pt": "Salvar renda", "en": "Save income", "es": "Guardar ingreso" },
       "noIncome":     { "pt": "Nenhuma renda cadastrada.", "en": "No income registered.", "es": "Sin ingreso registrado." },
-      "savedSuccess": { "pt": "Renda salva com sucesso!", "en": "Income saved!", "es": "¡Ingreso guardado!" }
+      "savedSuccess":      { "pt": "Renda salva com sucesso!", "en": "Income saved!", "es": "¡Ingreso guardado!" },
+      "effectiveFrom":    { "pt": "Vigente a partir de",    "en": "Effective from",   "es": "Vigente desde" },
+      "baseSalary":       { "pt": "Salário base",           "en": "Base salary",      "es": "Salario base" },
+      "fixedTotal":       { "pt": "Total fixo",             "en": "Fixed total",      "es": "Total fijo" },
+      "editBase":         { "pt": "Editar salário base",    "en": "Edit base salary", "es": "Editar salario base" },
+      "extraIncome":      { "pt": "Entradas extras",        "en": "Extra income",     "es": "Ingresos extra" },
+      "extraDescription": { "pt": "Descrição",              "en": "Description",      "es": "Descripción" },
+      "monthlyTotal":     { "pt": "Total do mês",           "en": "Monthly total",    "es": "Total del mes" },
+      "noIncomeCta":      { "pt": "Configurar salário",     "en": "Set up salary",    "es": "Configurar salario" },
+      "deleteEvent":      { "pt": "Excluir entrada?",       "en": "Delete entry?",    "es": "¿Eliminar entrada?" }
     },
     "expense": {
       "title":         { "pt": "Despesas", "en": "Expenses", "es": "Gastos" },
@@ -48,7 +58,8 @@
       "editExpense":   { "pt": "Editar despesa", "en": "Edit expense", "es": "Editar gasto" },
       "expenseName":   { "pt": "Nome da despesa", "en": "Expense name", "es": "Nombre del gasto" },
       "amount":        { "pt": "Valor", "en": "Amount", "es": "Monto" },
-      "dueDate":       { "pt": "Vencimento", "en": "Due date", "es": "Vencimiento" },
+      "dueDate":              { "pt": "Data", "en": "Date", "es": "Fecha" },
+      "installmentDateHint":  { "pt": "Data da compra (1ª parcela já paga)", "en": "Purchase date (1st installment paid)", "es": "Fecha de compra (1ª cuota pagada)" },
       "paid":          { "pt": "Pago", "en": "Paid", "es": "Pagado" },
       "unpaid":        { "pt": "Em aberto", "en": "Unpaid", "es": "Pendiente" },
       "markPaid":      { "pt": "Marcar como pago", "en": "Mark as paid", "es": "Marcar como pagado" },
@@ -72,7 +83,20 @@
       "catOutros":      { "pt": "Outros", "en": "Others", "es": "Otros" },
       "prioAlta":       { "pt": "Alta", "en": "High", "es": "Alta" },
       "prioMedia":      { "pt": "Média", "en": "Medium", "es": "Media" },
-      "prioBaixa":      { "pt": "Baixa", "en": "Low", "es": "Baja" }
+      "prioBaixa":      { "pt": "Baixa", "en": "Low", "es": "Baja" },
+      "paymentMethod":     { "pt": "Forma de pagamento",  "en": "Payment method", "es": "Forma de pago" },
+      "payMethodDinheiro": { "pt": "Dinheiro",             "en": "Cash",           "es": "Efectivo" },
+      "payMethodCredito":  { "pt": "Cartão de Crédito",    "en": "Credit Card",    "es": "Tarjeta de crédito" },
+      "payMethodDebito":   { "pt": "Cartão de Débito",     "en": "Debit Card",     "es": "Tarjeta de débito" },
+      "payMethodValeAlim": { "pt": "Vale Alimentação",     "en": "Food Voucher",   "es": "Vale alimentación" },
+      "payMethodValeRef":  { "pt": "Vale Refeição",        "en": "Meal Voucher",   "es": "Vale comida" },
+      "installment":       { "pt": "Parcelar",             "en": "Installments",   "es": "Cuotas" },
+      "installmentTotal":  { "pt": "Valor total",          "en": "Total amount",   "es": "Monto total" },
+      "installmentCount":  { "pt": "Número de parcelas",   "en": "No. of installments", "es": "Número de cuotas" },
+      "installmentPer":      { "pt": "por parcela",          "en": "per installment","es": "por cuota" },
+      "filterInstallment":   { "pt": "Parceladas",           "en": "Installments",   "es": "Cuotas" },
+      "installmentHeader":   { "pt": "Parcelado",            "en": "Installment",    "es": "Cuota" },
+      "payment":             { "pt": "Pagamento",            "en": "Payment",        "es": "Pago" }
     },
     "billTemplates": {
       "title":         { "pt": "Modelos de contas", "en": "Bill templates", "es": "Plantillas" },
@@ -93,7 +117,10 @@
       "confirm": { "pt": "Confirmar", "en": "Confirm", "es": "Confirmar" },
       "delete":  { "pt": "Excluir", "en": "Delete", "es": "Eliminar" },
       "yes":     { "pt": "Sim", "en": "Yes", "es": "Sí" },
-      "no":      { "pt": "Não", "en": "No", "es": "No" }
+      "no":      { "pt": "Não", "en": "No", "es": "No" },
+      "apply":   { "pt": "Aplicar", "en": "Apply", "es": "Aplicar" },
+      "clear":   { "pt": "Limpar", "en": "Clear", "es": "Limpiar" },
+      "all":     { "pt": "Todos", "en": "All", "es": "Todos" }
     },
     "authLogin": {
       "title":        { "pt": "Entrar", "en": "Sign in", "es": "Iniciar sesión" },

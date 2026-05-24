@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../domain/expense_category.dart';
+import '../../domain/expense_payment_method.dart';
 import '../../domain/expense_priority.dart';
 
 part 'expense_model.g.dart';
@@ -19,6 +20,10 @@ class ExpenseModel {
   final ExpensePriority priority;
   final DateTime referenceMonth;
   final String? notes;
+  final ExpensePaymentMethod? paymentMethod;
+  final String? installmentGroupId;
+  final int? installmentNumber;
+  final int? totalInstallments;
 
   const ExpenseModel({
     required this.id,
@@ -33,6 +38,10 @@ class ExpenseModel {
     required this.priority,
     required this.referenceMonth,
     this.notes,
+    this.paymentMethod,
+    this.installmentGroupId,
+    this.installmentNumber,
+    this.totalInstallments,
   });
 
   factory ExpenseModel.fromJson(Map<String, dynamic> json) => _$ExpenseModelFromJson(json);
@@ -51,6 +60,10 @@ class ExpenseModel {
     ExpensePriority? priority,
     DateTime? referenceMonth,
     String? notes,
+    ExpensePaymentMethod? paymentMethod,
+    String? installmentGroupId,
+    int? installmentNumber,
+    int? totalInstallments,
   }) {
     return ExpenseModel(
       id: id ?? this.id,
@@ -65,6 +78,10 @@ class ExpenseModel {
       priority: priority ?? this.priority,
       referenceMonth: referenceMonth ?? this.referenceMonth,
       notes: notes ?? this.notes,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      installmentGroupId: installmentGroupId ?? this.installmentGroupId,
+      installmentNumber: installmentNumber ?? this.installmentNumber,
+      totalInstallments: totalInstallments ?? this.totalInstallments,
     );
   }
 }

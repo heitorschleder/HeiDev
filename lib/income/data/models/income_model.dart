@@ -16,6 +16,7 @@ class IncomeModel {
   final double commission;
   final double bonus;
   final double otherIncome;
+  final DateTime effectiveFrom;
 
   const IncomeModel({
     required this.id,
@@ -28,6 +29,7 @@ class IncomeModel {
     required this.commission,
     required this.bonus,
     required this.otherIncome,
+    required this.effectiveFrom,
   });
 
   double get totalGrossIncome =>
@@ -47,6 +49,7 @@ class IncomeModel {
     double? commission,
     double? bonus,
     double? otherIncome,
+    DateTime? effectiveFrom,
   }) {
     return IncomeModel(
       id: id ?? this.id,
@@ -59,6 +62,7 @@ class IncomeModel {
       commission: commission ?? this.commission,
       bonus: bonus ?? this.bonus,
       otherIncome: otherIncome ?? this.otherIncome,
+      effectiveFrom: effectiveFrom ?? this.effectiveFrom,
     );
   }
 }

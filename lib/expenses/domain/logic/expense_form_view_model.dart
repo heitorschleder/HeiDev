@@ -5,6 +5,7 @@ import '../../../core/error/app_network_exception.dart';
 import '../../data/models/expense_model.dart';
 import '../../data/repositories/expense_repository.dart';
 import '../expense_category.dart';
+import '../expense_payment_method.dart';
 import '../expense_priority.dart';
 import 'expense_form_state.dart';
 
@@ -27,6 +28,10 @@ class ExpenseFormViewModel {
     required ExpensePriority priority,
     required DateTime referenceMonth,
     String? notes,
+    ExpensePaymentMethod? paymentMethod,
+    bool isInstallment = false,
+    double totalAmount = 0,
+    int installments = 1,
     ExpenseModel? existing,
   }) async {
     _state.value = _state.value.copyWith(isSaving: true, resetError: true);
@@ -41,7 +46,20 @@ class ExpenseFormViewModel {
             dueDate: dueDate,
             priority: priority,
             notes: notes,
+            paymentMethod: paymentMethod,
           ),
+        );
+      } else if (isInstallment) {
+        await _repository.saveInstallments(
+          title: title,
+          category: category,
+          isEssential: isEssential,
+          totalAmount: totalAmount,
+          installments: installments,
+          firstDueDate: dueDate,
+          priority: priority,
+          notes: notes,
+          paymentMethod: paymentMethod,
         );
       } else {
         await _repository.saveExpense(
@@ -53,6 +71,7 @@ class ExpenseFormViewModel {
           priority: priority,
           referenceMonth: referenceMonth,
           notes: notes,
+          paymentMethod: paymentMethod,
         );
       }
       _state.value = _state.value.copyWith(isSaving: false, savedSuccess: true);
@@ -60,6 +79,18 @@ class ExpenseFormViewModel {
       _state.value = _state.value.copyWith(isSaving: false, errorMessage: e.message);
     } catch (_) {
       _state.value = _state.value.copyWith(isSaving: false, errorMessage: 'Erro ao salvar despesa.');
+    }
+  }
+
+  Future<void> delete(String id) async {
+    _state.value = _state.value.copyWith(isSaving: true, resetError: true);
+    try {
+      await _repository.deleteExpense(id);
+      _state.value = _state.value.copyWith(isSaving: false, deleteSuccess: true);
+    } on AppNetworkException catch (e) {
+      _state.value = _state.value.copyWith(isSaving: false, errorMessage: e.message);
+    } catch (_) {
+      _state.value = _state.value.copyWith(isSaving: false, errorMessage: 'Erro ao excluir despesa.');
     }
   }
 

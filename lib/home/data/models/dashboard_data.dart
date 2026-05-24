@@ -1,4 +1,5 @@
 import '../../../expenses/data/models/expense_model.dart';
+import 'monthly_total.dart';
 
 class DashboardData {
   final double totalIncome;
@@ -8,6 +9,7 @@ class DashboardData {
   final double balance;
   final double pctCommitted;
   final List<ExpenseModel> dueSoon;
+  final List<MonthlyTotal> monthlyTotals;
 
   const DashboardData({
     required this.totalIncome,
@@ -17,5 +19,6 @@ class DashboardData {
     required this.balance,
     required this.pctCommitted,
     required this.dueSoon,
+    this.monthlyTotals = const [],
   });
 }

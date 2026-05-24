@@ -5,6 +5,7 @@ import '../../../core/error/app_network_exception.dart';
 import '../../data/repositories/expense_repository.dart';
 import '../../data/models/expense_model.dart';
 import '../expense_category.dart';
+import '../expense_payment_method.dart';
 import 'expense_list_state.dart';
 
 @injectable
@@ -20,7 +21,7 @@ class ExpenseListViewModel {
   Future<void> init() async => _load(_state.value.selectedMonth);
 
   Future<void> changeMonth(DateTime month) async {
-    _state.value = _state.value.copyWith(selectedMonth: month, isLoading: true, clearFilter: true);
+    _state.value = _state.value.copyWith(selectedMonth: month, isLoading: true, clearFilters: true);
     await _load(month);
   }
 
@@ -48,13 +49,23 @@ class ExpenseListViewModel {
     }
   }
 
-  void filterByCategory(ExpenseCategory? category) {
-    if (category == null) {
-      _state.value = _state.value.copyWith(clearFilter: true);
+  void setCategoryFilters(Set<ExpenseCategory> categories) =>
+      _state.value = _state.value.copyWith(categoryFilters: categories);
+
+  void filterByText(String q) => _state.value = _state.value.copyWith(textQuery: q);
+
+  void setPaymentFilters(Set<ExpensePaymentMethod> methods) =>
+      _state.value = _state.value.copyWith(paymentFilters: methods);
+
+  void filterByEssential(bool? v) {
+    if (v == null) {
+      _state.value = _state.value.copyWith(clearEssentialFilter: true);
     } else {
-      _state.value = _state.value.copyWith(categoryFilter: category);
+      _state.value = _state.value.copyWith(essentialFilter: v);
     }
   }
+
+  void filterByInstallment(bool v) => _state.value = _state.value.copyWith(installmentFilter: v);
 
   Future<void> _load(DateTime month) async {
     _state.value = _state.value.copyWith(isLoading: true, resetError: true);

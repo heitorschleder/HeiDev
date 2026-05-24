@@ -9,6 +9,7 @@ import '../../../core/l10n/l10n.dart';
 import '../../data/models/bill_template_model.dart';
 import '../../data/models/expense_model.dart';
 import '../../domain/expense_category.dart';
+import '../../domain/expense_payment_method.dart';
 import '../../domain/expense_priority.dart';
 import '../../domain/logic/bill_template_list_state.dart';
 import '../../domain/logic/bill_template_list_view_model.dart';
@@ -32,10 +33,14 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
   final _titleCtrl = TextEditingController();
   final _amountCtrl = TextEditingController();
   final _notesCtrl = TextEditingController();
+  final _totalAmountCtrl = TextEditingController();
+  final _installmentsCtrl = TextEditingController();
 
   ExpenseCategory _category = ExpenseCategory.outros;
   ExpensePriority _priority = ExpensePriority.media;
+  ExpensePaymentMethod _paymentMethod = ExpensePaymentMethod.dinheiro;
   bool _isEssential = true;
+  bool _isInstallment = false;
   DateTime _dueDate = DateTime.now();
 
   @override
@@ -46,6 +51,9 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
     _templateVm = getIt<BillTemplateListViewModel>();
     unawaited(_templateVm.init());
 
+    _totalAmountCtrl.addListener(() => setState(() {}));
+    _installmentsCtrl.addListener(() => setState(() {}));
+
     final e = widget.expense;
     if (e != null) {
       _titleCtrl.text = e.title;
@@ -53,14 +61,16 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
       _notesCtrl.text = e.notes ?? '';
       _category = e.category;
       _priority = e.priority;
+      _paymentMethod = e.paymentMethod ?? ExpensePaymentMethod.dinheiro;
       _isEssential = e.isEssential;
       _dueDate = e.dueDate;
     }
   }
 
   void _onStateChanged() {
+    if (!mounted) return;
     final state = _vm.state.value;
-    if (state.savedSuccess) {
+    if (state.savedSuccess || state.deleteSuccess) {
       Navigator.of(context).pop();
       return;
     }
@@ -74,6 +84,28 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
     }
   }
 
+  Future<void> _confirmDelete() async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.expenseDeleteConfirm),
+        content: Text(widget.expense!.title),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.appGeneralCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            style: FilledButton.styleFrom(backgroundColor: Theme.of(dialogContext).colorScheme.error),
+            child: Text(l10n.appGeneralDelete),
+          ),
+        ],
+      ),
+    );
+    if (ok ?? false) unawaited(_vm.delete(widget.expense!.id));
+  }
+
   @override
   void dispose() {
     _vm.state.removeListener(_onStateChanged);
@@ -82,6 +114,8 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
     _titleCtrl.dispose();
     _amountCtrl.dispose();
     _notesCtrl.dispose();
+    _totalAmountCtrl.dispose();
+    _installmentsCtrl.dispose();
     super.dispose();
   }
 
@@ -117,26 +151,48 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     final amount = double.tryParse(_amountCtrl.text.replaceAll(',', '.')) ?? 0;
+    final totalAmount = double.tryParse(_totalAmountCtrl.text.replaceAll(',', '.')) ?? 0;
+    final installments = int.tryParse(_installmentsCtrl.text) ?? 1;
     final referenceMonth = DateTime(_dueDate.year, _dueDate.month);
     await _vm.save(
       title: _titleCtrl.text.trim(),
       category: _category,
       isEssential: _isEssential,
-      amount: amount,
+      amount: _isInstallment ? totalAmount / installments : amount,
       dueDate: _dueDate,
       priority: _priority,
       referenceMonth: referenceMonth,
       notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
+      paymentMethod: _paymentMethod,
+      isInstallment: _isInstallment,
+      totalAmount: totalAmount,
+      installments: installments,
       existing: widget.expense,
     );
+  }
+
+  double get _perInstallment {
+    final total = double.tryParse(_totalAmountCtrl.text.replaceAll(',', '.')) ?? 0;
+    final n = int.tryParse(_installmentsCtrl.text) ?? 1;
+    return n > 0 ? (total / n * 100).round() / 100 : 0;
   }
 
   @override
   Widget build(BuildContext context) {
     final isEditing = widget.expense != null;
+    final expense = widget.expense;
+    final fmt = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
+
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditing ? l10n.expenseEditExpense : l10n.expenseNewExpense),
+        actions: [
+          if (isEditing)
+            IconButton(
+              icon: const Icon(Icons.delete_outline),
+              onPressed: _confirmDelete,
+            ),
+        ],
       ),
       body: Form(
         key: _formKey,
@@ -150,29 +206,54 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
                 label: Text(l10n.expenseUseTemplate),
               ),
             if (!isEditing) const SizedBox(height: 12),
-            TextFormField(
-              controller: _titleCtrl,
-              decoration: InputDecoration(labelText: l10n.expenseExpenseName),
-              textCapitalization: TextCapitalization.sentences,
-              validator: (v) => (v == null || v.trim().isEmpty) ? l10n.appGeneralError : null,
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _titleCtrl,
+                    decoration: InputDecoration(labelText: l10n.expenseExpenseName),
+                    textCapitalization: TextCapitalization.sentences,
+                    validator: (v) => (v == null || v.trim().isEmpty) ? l10n.appGeneralError : null,
+                  ),
+                ),
+                if (isEditing && expense?.totalInstallments != null) ...[
+                  const SizedBox(width: 8),
+                  Chip(
+                    label: Text('${expense!.installmentNumber}/${expense.totalInstallments}'),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ],
+              ],
             ),
             const SizedBox(height: 12),
-            TextFormField(
-              controller: _amountCtrl,
-              decoration: InputDecoration(labelText: l10n.expenseAmount, prefixText: 'R\$ '),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d,.]'))],
-              validator: (v) {
-                if (v == null || v.trim().isEmpty) return l10n.appGeneralError;
-                if ((double.tryParse(v.replaceAll(',', '.')) ?? -1) < 0) return l10n.appGeneralError;
-                return null;
-              },
-            ),
+            if (!_isInstallment)
+              TextFormField(
+                controller: _amountCtrl,
+                decoration: InputDecoration(labelText: l10n.expenseAmount, prefixText: 'R\$ '),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d,.]'))],
+                validator: (v) {
+                  if (_isInstallment) return null;
+                  if (v == null || v.trim().isEmpty) return l10n.appGeneralError;
+                  if ((double.tryParse(v.replaceAll(',', '.')) ?? -1) < 0) return l10n.appGeneralError;
+                  return null;
+                },
+              ),
             const SizedBox(height: 12),
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(l10n.expenseDueDate),
-              subtitle: Text(DateFormat('dd/MM/yyyy').format(_dueDate)),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(DateFormat('dd/MM/yyyy').format(_dueDate)),
+                  if (_isInstallment)
+                    Text(
+                      l10n.expenseInstallmentDateHint,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                ],
+              ),
               trailing: const Icon(Icons.calendar_today_outlined),
               onTap: _pickDate,
             ),
@@ -186,6 +267,11 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
               value: _priority,
               onChanged: (v) => setState(() => _priority = v),
             ),
+            const SizedBox(height: 12),
+            _PaymentMethodDropdown(
+              value: _paymentMethod,
+              onChanged: (v) => setState(() => _paymentMethod = v),
+            ),
             const SizedBox(height: 4),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
@@ -193,6 +279,47 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
               value: _isEssential,
               onChanged: (v) => setState(() => _isEssential = v),
             ),
+            if (!isEditing) ...[
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.expenseInstallment),
+                value: _isInstallment,
+                onChanged: (v) => setState(() => _isInstallment = v),
+              ),
+              if (_isInstallment) ...[
+                TextFormField(
+                  controller: _totalAmountCtrl,
+                  decoration: InputDecoration(labelText: l10n.expenseInstallmentTotal, prefixText: 'R\$ '),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d,.]'))],
+                  validator: (v) {
+                    if (!_isInstallment) return null;
+                    if (v == null || v.trim().isEmpty) return l10n.appGeneralError;
+                    if ((double.tryParse(v.replaceAll(',', '.')) ?? -1) <= 0) return l10n.appGeneralError;
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _installmentsCtrl,
+                  decoration: InputDecoration(labelText: l10n.expenseInstallmentCount),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  validator: (v) {
+                    if (!_isInstallment) return null;
+                    final n = int.tryParse(v ?? '');
+                    if (n == null || n < 2 || n > 60) return l10n.appGeneralError;
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 8),
+                if (_perInstallment > 0)
+                  Text(
+                    '${fmt.format(_perInstallment)} ${l10n.expenseInstallmentPer}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+              ],
+            ],
             const SizedBox(height: 4),
             TextFormField(
               controller: _notesCtrl,
@@ -277,6 +404,32 @@ class _PriorityDropdown extends StatelessWidget {
     ExpensePriority.alta => l10n.expensePrioAlta,
     ExpensePriority.media => l10n.expensePrioMedia,
     ExpensePriority.baixa => l10n.expensePrioBaixa,
+  };
+}
+
+class _PaymentMethodDropdown extends StatelessWidget {
+  const _PaymentMethodDropdown({required this.value, required this.onChanged});
+
+  final ExpensePaymentMethod value;
+  final ValueChanged<ExpensePaymentMethod> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<ExpensePaymentMethod>(
+      key: ValueKey(value),
+      initialValue: value,
+      decoration: InputDecoration(labelText: l10n.expensePaymentMethod),
+      items: ExpensePaymentMethod.values.map((m) => DropdownMenuItem(value: m, child: Text(_label(m)))).toList(),
+      onChanged: (v) => onChanged(v!),
+    );
+  }
+
+  String _label(ExpensePaymentMethod m) => switch (m) {
+    ExpensePaymentMethod.dinheiro => l10n.expensePayMethodDinheiro,
+    ExpensePaymentMethod.credito => l10n.expensePayMethodCredito,
+    ExpensePaymentMethod.debito => l10n.expensePayMethodDebito,
+    ExpensePaymentMethod.valeAlimentacao => l10n.expensePayMethodValeAlim,
+    ExpensePaymentMethod.valeRefeicao => l10n.expensePayMethodValeRef,
   };
 }
 

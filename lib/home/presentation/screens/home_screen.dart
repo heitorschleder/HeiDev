@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -9,6 +10,7 @@ import '../../../core/routing/app_router.dart';
 import '../../../core/routing/route_repository.dart';
 import '../../../expenses/data/models/expense_model.dart';
 import '../../data/models/dashboard_data.dart';
+import '../../data/models/monthly_total.dart';
 import '../../domain/logic/home_state.dart';
 import '../../domain/logic/home_view_model.dart';
 
@@ -99,6 +101,10 @@ class _DashboardBody extends StatelessWidget {
           _ExpensesCard(dashboard: dashboard, fmt: fmt),
           const SizedBox(height: 12),
           _BalanceCard(dashboard: dashboard, fmt: fmt),
+          if (dashboard.monthlyTotals.isNotEmpty) ...[
+            const SizedBox(height: 20),
+            _MonthlyChart(monthlyTotals: dashboard.monthlyTotals),
+          ],
           if (dashboard.dueSoon.isNotEmpty) ...[
             const SizedBox(height: 20),
             Text(l10n.dashboardDueSoon, style: Theme.of(context).textTheme.titleSmall),
@@ -314,6 +320,75 @@ class _DueSoonTile extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _MonthlyChart extends StatelessWidget {
+  const _MonthlyChart({required this.monthlyTotals});
+
+  final List<MonthlyTotal> monthlyTotals;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final maxY = monthlyTotals.fold<double>(0, (m, t) => t.totalExpenses > m ? t.totalExpenses : m);
+    final chartMax = maxY > 0 ? maxY * 1.2 : 100.0;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.dashboardMonthlyHistory, style: Theme.of(context).textTheme.titleSmall),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 180,
+          child: BarChart(
+            BarChartData(
+              maxY: chartMax,
+              gridData: const FlGridData(show: false),
+              borderData: FlBorderData(show: false),
+              titlesData: FlTitlesData(
+                leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (value, meta) {
+                      final i = value.toInt();
+                      if (i < 0 || i >= monthlyTotals.length) return const SizedBox.shrink();
+                      return Text(
+                        DateFormat('MMM').format(monthlyTotals[i].month),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      );
+                    },
+                  ),
+                ),
+              ),
+              barGroups: List.generate(monthlyTotals.length, (i) {
+                final m = monthlyTotals[i];
+                return BarChartGroupData(
+                  x: i,
+                  barRods: [
+                    BarChartRodData(
+                      toY: m.totalExpenses,
+                      color: colorScheme.surfaceContainerHighest,
+                      width: 10,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    BarChartRodData(
+                      toY: m.totalPaid,
+                      color: colorScheme.primary,
+                      width: 10,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ],
+                );
+              }),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

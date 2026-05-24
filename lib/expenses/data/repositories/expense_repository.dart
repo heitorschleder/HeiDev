@@ -1,8 +1,10 @@
 import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../core/error/app_network_exception.dart';
 import '../../domain/expense_category.dart';
+import '../../domain/expense_payment_method.dart';
 import '../../domain/expense_priority.dart';
 import '../models/expense_model.dart';
 
@@ -37,6 +39,7 @@ class ExpenseRepository {
     required DateTime referenceMonth,
     String? templateId,
     String? notes,
+    ExpensePaymentMethod? paymentMethod,
   }) async {
     try {
       final userId = _client.auth.currentUser!.id;
@@ -48,15 +51,66 @@ class ExpenseRepository {
         'is_essential': isEssential,
         'amount': amount,
         'due_date': dueDate.toIso8601String().substring(0, 10),
+        'paid': true,
+        'paid_at': dueDate.toIso8601String(),
         'priority': priority.name,
         'reference_month': _monthKey(referenceMonth),
         'notes': notes,
+        if (paymentMethod != null) 'payment_method': paymentMethod.name,
       });
     } on PostgrestException catch (e) {
       throw AppNetworkException(message: e.message, reason: AppNetworkExceptionReason.serverError);
     } catch (_) {
       throw const AppNetworkException(
         message: 'Erro ao salvar despesa.',
+        reason: AppNetworkExceptionReason.unknown,
+      );
+    }
+  }
+
+  Future<void> saveInstallments({
+    required String title,
+    required ExpenseCategory category,
+    required bool isEssential,
+    required double totalAmount,
+    required int installments,
+    required DateTime firstDueDate,
+    required ExpensePriority priority,
+    String? notes,
+    ExpensePaymentMethod? paymentMethod,
+  }) async {
+    try {
+      final userId = _client.auth.currentUser!.id;
+      final groupId = const Uuid().v4();
+      final perInstallment = (totalAmount / installments * 100).round() / 100;
+
+      final rows = List.generate(installments, (i) {
+        final dueDate = i == 0 ? firstDueDate : firstDueDate.add(Duration(days: 30 * i));
+        return {
+          'user_id': userId,
+          'title': '$title (${i + 1}/$installments)',
+          'category': category.name,
+          'is_essential': isEssential,
+          'amount': perInstallment,
+          'due_date': dueDate.toIso8601String().substring(0, 10),
+          'paid': i == 0,
+          'paid_at': i == 0 ? firstDueDate.toIso8601String() : null,
+          'priority': priority.name,
+          'reference_month': _monthKey(dueDate),
+          'notes': notes,
+          'installment_group_id': groupId,
+          'installment_number': i + 1,
+          'total_installments': installments,
+          if (paymentMethod != null) 'payment_method': paymentMethod.name,
+        };
+      });
+
+      await _client.from('expenses').insert(rows);
+    } on PostgrestException catch (e) {
+      throw AppNetworkException(message: e.message, reason: AppNetworkExceptionReason.serverError);
+    } catch (_) {
+      throw const AppNetworkException(
+        message: 'Erro ao salvar parcelas.',
         reason: AppNetworkExceptionReason.unknown,
       );
     }
