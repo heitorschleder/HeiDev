@@ -65,9 +65,10 @@ class _HomeScreenState extends State<HomeScreen> {
           }
           return _DashboardBody(
             dashboard: state.dashboard!,
+            onRefresh: _vm.refresh,
             onAddExpense: () async {
               await AppRouter.push(RouteRepository.expenseFormScreen.makeNavigation(null));
-              unawaited(_vm.init());
+              unawaited(_vm.refresh());
             },
           );
         },
@@ -77,9 +78,10 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _DashboardBody extends StatelessWidget {
-  const _DashboardBody({required this.dashboard, required this.onAddExpense});
+  const _DashboardBody({required this.dashboard, required this.onRefresh, required this.onAddExpense});
 
   final DashboardData dashboard;
+  final Future<void> Function() onRefresh;
   final VoidCallback onAddExpense;
 
   @override
@@ -87,7 +89,7 @@ class _DashboardBody extends StatelessWidget {
     final fmt = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
 
     return RefreshIndicator(
-      onRefresh: () async {},
+      onRefresh: onRefresh,
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [

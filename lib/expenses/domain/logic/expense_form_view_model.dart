@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../core/error/app_network_exception.dart';
+import '../../../income/data/repositories/income_repository.dart';
 import '../../data/models/expense_model.dart';
 import '../../data/repositories/expense_repository.dart';
 import '../expense_category.dart';
@@ -12,12 +13,29 @@ import 'expense_form_state.dart';
 @injectable
 class ExpenseFormViewModel {
   final ExpenseRepository _repository;
+  final IncomeRepository _incomeRepository;
 
-  ExpenseFormViewModel(this._repository);
+  ExpenseFormViewModel(this._repository, this._incomeRepository);
 
   final ValueNotifier<ExpenseFormState> _state = ValueNotifier(ExpenseFormState.initial());
 
   ValueListenable<ExpenseFormState> get state => _state;
+
+  Future<void> init() async {
+    try {
+      final vouchers = await _incomeRepository.fetchIncomeVouchers();
+      final allowed = [
+        ExpensePaymentMethod.dinheiro,
+        ExpensePaymentMethod.credito,
+        ExpensePaymentMethod.debito,
+        if (vouchers.receivesVr) ExpensePaymentMethod.valeRefeicao,
+        if (vouchers.receivesVa) ExpensePaymentMethod.valeAlimentacao,
+      ];
+      _state.value = _state.value.copyWith(allowedPaymentMethods: allowed);
+    } catch (_) {
+      // fallback: keep all methods visible
+    }
+  }
 
   Future<void> save({
     required String title,

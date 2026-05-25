@@ -48,6 +48,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
     super.initState();
     _vm = getIt<ExpenseFormViewModel>();
     _vm.state.addListener(_onStateChanged);
+    unawaited(_vm.init());
     _templateVm = getIt<BillTemplateListViewModel>();
     unawaited(_templateVm.init());
 
@@ -69,6 +70,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
 
   void _onStateChanged() {
     if (!mounted) return;
+    setState(() {});
     final state = _vm.state.value;
     if (state.savedSuccess || state.deleteSuccess) {
       Navigator.of(context).pop();
@@ -271,6 +273,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
             _PaymentMethodDropdown(
               value: _paymentMethod,
               onChanged: (v) => setState(() => _paymentMethod = v),
+              allowedMethods: _vm.state.value.allowedPaymentMethods,
             ),
             const SizedBox(height: 4),
             SwitchListTile(
@@ -408,18 +411,24 @@ class _PriorityDropdown extends StatelessWidget {
 }
 
 class _PaymentMethodDropdown extends StatelessWidget {
-  const _PaymentMethodDropdown({required this.value, required this.onChanged});
+  const _PaymentMethodDropdown({
+    required this.value,
+    required this.onChanged,
+    required this.allowedMethods,
+  });
 
   final ExpensePaymentMethod value;
   final ValueChanged<ExpensePaymentMethod> onChanged;
+  final List<ExpensePaymentMethod> allowedMethods;
 
   @override
   Widget build(BuildContext context) {
+    final effectiveValue = allowedMethods.contains(value) ? value : allowedMethods.first;
     return DropdownButtonFormField<ExpensePaymentMethod>(
-      key: ValueKey(value),
-      initialValue: value,
+      key: ValueKey(effectiveValue),
+      initialValue: effectiveValue,
       decoration: InputDecoration(labelText: l10n.expensePaymentMethod),
-      items: ExpensePaymentMethod.values.map((m) => DropdownMenuItem(value: m, child: Text(_label(m)))).toList(),
+      items: allowedMethods.map((m) => DropdownMenuItem(value: m, child: Text(_label(m)))).toList(),
       onChanged: (v) => onChanged(v!),
     );
   }

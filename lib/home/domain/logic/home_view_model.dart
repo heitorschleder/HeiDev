@@ -22,6 +22,12 @@ final class HomeViewModel {
 
   Future<void> init() async {
     _state.value = HomeState.initial();
+    await _fetch();
+  }
+
+  Future<void> refresh() async => _fetch();
+
+  Future<void> _fetch() async {
     try {
       final dashboard = await _dashboardRepository.fetchDashboard(
         month: DateTime(DateTime.now().year, DateTime.now().month),

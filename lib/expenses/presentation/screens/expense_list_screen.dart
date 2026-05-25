@@ -61,7 +61,7 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
       isScrollControlled: true,
       builder: (_) => _MultiSelectSheet<ExpensePaymentMethod>(
         title: l10n.expensePaymentMethod,
-        options: ExpensePaymentMethod.values,
+        options: _vm.state.value.allowedPaymentMethods,
         initialSelected: current,
         labelOf: _paymentLabel,
       ),

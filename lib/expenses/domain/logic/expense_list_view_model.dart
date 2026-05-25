@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../core/error/app_network_exception.dart';
+import '../../../income/data/repositories/income_repository.dart';
 import '../../data/repositories/expense_repository.dart';
 import '../../data/models/expense_model.dart';
 import '../expense_category.dart';
@@ -11,14 +12,19 @@ import 'expense_list_state.dart';
 @injectable
 class ExpenseListViewModel {
   final ExpenseRepository _repository;
+  final IncomeRepository _incomeRepository;
 
-  ExpenseListViewModel(this._repository);
+  ExpenseListViewModel(this._repository, this._incomeRepository);
 
   final ValueNotifier<ExpenseListState> _state = ValueNotifier(ExpenseListState.initial());
 
   ValueListenable<ExpenseListState> get state => _state;
 
-  Future<void> init() async => _load(_state.value.selectedMonth);
+  Future<void> init() async {
+    _state.value = ExpenseListState.initial();
+    await _loadAllowedMethods();
+    await _load(_state.value.selectedMonth);
+  }
 
   Future<void> changeMonth(DateTime month) async {
     _state.value = _state.value.copyWith(selectedMonth: month, isLoading: true, clearFilters: true);
@@ -66,6 +72,22 @@ class ExpenseListViewModel {
   }
 
   void filterByInstallment(bool v) => _state.value = _state.value.copyWith(installmentFilter: v);
+
+  Future<void> _loadAllowedMethods() async {
+    try {
+      final vouchers = await _incomeRepository.fetchIncomeVouchers();
+      final allowed = [
+        ExpensePaymentMethod.dinheiro,
+        ExpensePaymentMethod.credito,
+        ExpensePaymentMethod.debito,
+        if (vouchers.receivesVr) ExpensePaymentMethod.valeRefeicao,
+        if (vouchers.receivesVa) ExpensePaymentMethod.valeAlimentacao,
+      ];
+      _state.value = _state.value.copyWith(allowedPaymentMethods: allowed);
+    } catch (_) {
+      // fallback: keep all methods visible
+    }
+  }
 
   Future<void> _load(DateTime month) async {
     _state.value = _state.value.copyWith(isLoading: true, resetError: true);

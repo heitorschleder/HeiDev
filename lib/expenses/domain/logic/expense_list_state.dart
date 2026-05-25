@@ -11,6 +11,7 @@ class ExpenseListState extends Equatable {
   final Set<ExpenseCategory> categoryFilters;
   final String textQuery;
   final Set<ExpensePaymentMethod> paymentFilters;
+  final List<ExpensePaymentMethod> allowedPaymentMethods;
   final bool? essentialFilter;
   final bool installmentFilter;
   final String? errorMessage;
@@ -22,6 +23,7 @@ class ExpenseListState extends Equatable {
     this.categoryFilters = const {},
     this.textQuery = '',
     this.paymentFilters = const {},
+    this.allowedPaymentMethods = ExpensePaymentMethod.values,
     this.essentialFilter,
     this.installmentFilter = false,
     this.errorMessage,
@@ -56,6 +58,7 @@ class ExpenseListState extends Equatable {
     Set<ExpenseCategory>? categoryFilters,
     String? textQuery,
     Set<ExpensePaymentMethod>? paymentFilters,
+    List<ExpensePaymentMethod>? allowedPaymentMethods,
     bool? essentialFilter,
     bool clearEssentialFilter = false,
     bool? installmentFilter,
@@ -70,6 +73,7 @@ class ExpenseListState extends Equatable {
       categoryFilters: clearFilters ? const {} : categoryFilters ?? this.categoryFilters,
       textQuery: clearFilters ? '' : textQuery ?? this.textQuery,
       paymentFilters: clearFilters ? const {} : paymentFilters ?? this.paymentFilters,
+      allowedPaymentMethods: allowedPaymentMethods ?? this.allowedPaymentMethods,
       essentialFilter: clearFilters || clearEssentialFilter ? null : essentialFilter ?? this.essentialFilter,
       installmentFilter: clearFilters ? false : installmentFilter ?? this.installmentFilter,
       errorMessage: resetError ? null : errorMessage ?? this.errorMessage,
@@ -84,6 +88,7 @@ class ExpenseListState extends Equatable {
     categoryFilters,
     textQuery,
     paymentFilters,
+    allowedPaymentMethods,
     essentialFilter,
     installmentFilter,
     errorMessage,

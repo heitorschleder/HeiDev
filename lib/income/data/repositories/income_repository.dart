@@ -107,6 +107,26 @@ class IncomeRepository {
     }
   }
 
+  Future<({bool receivesVr, bool receivesVa})> fetchIncomeVouchers() async {
+    try {
+      final data = await _client
+          .from('incomes')
+          .select('receives_vr, receives_va')
+          .order('effective_from', ascending: false)
+          .limit(1)
+          .maybeSingle();
+      if (data == null) return (receivesVr: true, receivesVa: true);
+      return (
+        receivesVr: data['receives_vr'] == true,
+        receivesVa: data['receives_va'] == true,
+      );
+    } on PostgrestException catch (e) {
+      throw AppNetworkException(message: e.message, reason: AppNetworkExceptionReason.serverError);
+    } catch (_) {
+      return (receivesVr: true, receivesVa: true);
+    }
+  }
+
   Future<void> deleteEvent(String id) async {
     try {
       await _client.from('income_events').delete().eq('id', id);
