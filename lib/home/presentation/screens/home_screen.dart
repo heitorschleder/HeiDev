@@ -98,6 +98,7 @@ class _DashboardBody extends StatelessWidget {
             value: formatBRL(dashboard.totalIncome),
             icon: Icons.account_balance_wallet_outlined,
             color: Theme.of(context).colorScheme.primary,
+            obscurable: true,
           ),
           const SizedBox(height: 12),
           _ExpensesCard(dashboard: dashboard),
@@ -129,41 +130,60 @@ class _DashboardBody extends StatelessWidget {
   }
 }
 
-class _SummaryCard extends StatelessWidget {
+class _SummaryCard extends StatefulWidget {
   const _SummaryCard({
     required this.label,
     required this.value,
     required this.icon,
     required this.color,
+    this.obscurable = false,
   });
 
   final String label;
   final String value;
   final IconData icon;
   final Color color;
+  final bool obscurable;
+
+  @override
+  State<_SummaryCard> createState() => _SummaryCardState();
+}
+
+class _SummaryCardState extends State<_SummaryCard> {
+  bool _visible = false;
 
   @override
   Widget build(BuildContext context) {
+    final displayValue = widget.obscurable && !_visible ? '*****' : widget.value;
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Icon(icon, color: color, size: 32),
+            Icon(widget.icon, color: widget.color, size: 32),
             const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: Theme.of(context).textTheme.bodySmall),
-                Text(
-                  value,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.bold,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(widget.label, style: Theme.of(context).textTheme.bodySmall),
+                  Text(
+                    displayValue,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: widget.color,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
+            if (widget.obscurable)
+              IconButton(
+                icon: Icon(_visible ? Icons.visibility : Icons.visibility_off),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                onPressed: () => setState(() => _visible = !_visible),
+              ),
           ],
         ),
       ),
