@@ -1,4 +1,5 @@
 import '../../../expenses/data/models/expense_model.dart';
+import '../../../expenses/domain/expense_category.dart';
 import 'monthly_total.dart';
 
 class DashboardData {
@@ -10,6 +11,7 @@ class DashboardData {
   final double pctCommitted;
   final List<ExpenseModel> dueSoon;
   final List<MonthlyTotal> monthlyTotals;
+  final Map<ExpenseCategory, double> categoryTotals;
 
   const DashboardData({
     required this.totalIncome,
@@ -20,5 +22,6 @@ class DashboardData {
     required this.pctCommitted,
     required this.dueSoon,
     this.monthlyTotals = const [],
+    this.categoryTotals = const {},
   });
 }

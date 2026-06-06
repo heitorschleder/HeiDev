@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/error/app_network_exception.dart';
 import '../../../expenses/data/models/expense_model.dart';
+import '../../../expenses/domain/expense_category.dart';
 import '../../../income/data/models/income_model.dart';
 import '../models/dashboard_data.dart';
 import '../models/monthly_total.dart';
@@ -49,6 +50,11 @@ class DashboardRepository {
           expenses.where((e) => !e.paid && e.dueDate.isBefore(threeDaysLater) && !e.dueDate.isBefore(now)).toList()
             ..sort((a, b) => a.dueDate.compareTo(b.dueDate));
 
+      final categoryTotals = <ExpenseCategory, double>{};
+      for (final e in expenses) {
+        categoryTotals[e.category] = (categoryTotals[e.category] ?? 0) + e.amount;
+      }
+
       final monthlyTotals = await fetchMonthlyTotals();
 
       return DashboardData(
@@ -60,6 +66,7 @@ class DashboardRepository {
         pctCommitted: pctCommitted.toDouble(),
         dueSoon: dueSoon,
         monthlyTotals: monthlyTotals,
+        categoryTotals: categoryTotals,
       );
     } on PostgrestException catch (e) {
       throw AppNetworkException(message: e.message, reason: AppNetworkExceptionReason.serverError);

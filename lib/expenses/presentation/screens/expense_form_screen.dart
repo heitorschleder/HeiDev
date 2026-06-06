@@ -37,7 +37,6 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
   final _installmentsCtrl = TextEditingController();
 
   ExpenseCategory _category = ExpenseCategory.outros;
-  ExpensePriority _priority = ExpensePriority.media;
   ExpensePaymentMethod _paymentMethod = ExpensePaymentMethod.dinheiro;
   bool _isEssential = true;
   bool _isInstallment = false;
@@ -61,7 +60,6 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
       _amountCtrl.text = e.amount.toStringAsFixed(2);
       _notesCtrl.text = e.notes ?? '';
       _category = e.category;
-      _priority = e.priority;
       _paymentMethod = e.paymentMethod ?? ExpensePaymentMethod.dinheiro;
       _isEssential = e.isEssential;
       _dueDate = e.dueDate;
@@ -162,7 +160,7 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
       isEssential: _isEssential,
       amount: _isInstallment ? totalAmount / installments : amount,
       dueDate: _dueDate,
-      priority: _priority,
+      priority: ExpensePriority.media,
       referenceMonth: referenceMonth,
       notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
       paymentMethod: _paymentMethod,
@@ -263,11 +261,6 @@ class _ExpenseFormScreenState extends State<ExpenseFormScreen> {
             _CategoryDropdown(
               value: _category,
               onChanged: (v) => setState(() => _category = v),
-            ),
-            const SizedBox(height: 12),
-            _PriorityDropdown(
-              value: _priority,
-              onChanged: (v) => setState(() => _priority = v),
             ),
             const SizedBox(height: 12),
             _PaymentMethodDropdown(
@@ -379,34 +372,6 @@ class _CategoryDropdown extends StatelessWidget {
     ExpenseCategory.lazer => l10n.expenseCatLazer,
     ExpenseCategory.impostos => l10n.expenseCatImpostos,
     ExpenseCategory.outros => l10n.expenseCatOutros,
-  };
-}
-
-class _PriorityDropdown extends StatelessWidget {
-  const _PriorityDropdown({required this.value, required this.onChanged});
-
-  final ExpensePriority value;
-  final ValueChanged<ExpensePriority> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonFormField<ExpensePriority>(
-      key: ValueKey(value),
-      initialValue: value,
-      decoration: InputDecoration(labelText: l10n.expensePriority),
-      items: ExpensePriority.values
-          .map(
-            (p) => DropdownMenuItem(value: p, child: Text(_label(p))),
-          )
-          .toList(),
-      onChanged: (v) => onChanged(v!),
-    );
-  }
-
-  String _label(ExpensePriority p) => switch (p) {
-    ExpensePriority.alta => l10n.expensePrioAlta,
-    ExpensePriority.media => l10n.expensePrioMedia,
-    ExpensePriority.baixa => l10n.expensePrioBaixa,
   };
 }
 

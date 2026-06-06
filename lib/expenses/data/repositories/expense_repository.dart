@@ -56,7 +56,7 @@ class ExpenseRepository {
         'priority': priority.name,
         'reference_month': _monthKey(referenceMonth),
         'notes': notes,
-        if (paymentMethod != null) 'payment_method': paymentMethod.name,
+        if (paymentMethod != null) 'payment_method': _paymentValue(paymentMethod),
       });
     } on PostgrestException catch (e) {
       throw AppNetworkException(message: e.message, reason: AppNetworkExceptionReason.serverError);
@@ -101,7 +101,7 @@ class ExpenseRepository {
           'installment_group_id': groupId,
           'installment_number': i + 1,
           'total_installments': installments,
-          if (paymentMethod != null) 'payment_method': paymentMethod.name,
+          if (paymentMethod != null) 'payment_method': _paymentValue(paymentMethod),
         };
       });
 
@@ -200,4 +200,12 @@ class ExpenseRepository {
   }
 
   static String _monthKey(DateTime dt) => '${dt.year}-${dt.month.toString().padLeft(2, '0')}-01';
+
+  static String _paymentValue(ExpensePaymentMethod method) => switch (method) {
+    ExpensePaymentMethod.dinheiro => 'dinheiro',
+    ExpensePaymentMethod.credito => 'credito',
+    ExpensePaymentMethod.debito => 'debito',
+    ExpensePaymentMethod.valeAlimentacao => 'vale_alimentacao',
+    ExpensePaymentMethod.valeRefeicao => 'vale_refeicao',
+  };
 }

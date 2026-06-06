@@ -22,7 +22,8 @@
       "noIncome":       { "pt": "Cadastre sua renda para ver o resumo.", "en": "Register your income to see the summary.", "es": "Registra tu ingreso para ver el resumen." },
       "noExpenses":     { "pt": "Nenhuma despesa este mês.", "en": "No expenses this month.", "es": "Sin gastos este mes." },
       "addExpense":     { "pt": "Lançar despesa", "en": "Add expense", "es": "Agregar gasto" },
-      "monthlyHistory": { "pt": "Histórico (6 meses)", "en": "History (6 months)", "es": "Historial (6 meses)" }
+      "monthlyHistory": { "pt": "Histórico (6 meses)", "en": "History (6 months)", "es": "Historial (6 meses)" },
+      "byCategory":     { "pt": "Despesas por categoria", "en": "Expenses by category", "es": "Gastos por categoría" }
     },
     "income": {
       "title":        { "pt": "Renda", "en": "Income", "es": "Ingresos" },

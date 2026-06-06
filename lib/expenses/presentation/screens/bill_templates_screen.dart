@@ -76,14 +76,14 @@ class _BillTemplatesScreenState extends State<BillTemplatesScreen> {
   Future<void> _confirmDelete(BillTemplateModel template) async {
     final ok = await showDialog<bool>(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(l10n.billTemplatesDeleteConfirm),
         content: Text(template.title),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.appGeneralCancel)),
+          TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(l10n.appGeneralCancel)),
           FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
+            onPressed: () => Navigator.pop(dialogContext, true),
+            style: FilledButton.styleFrom(backgroundColor: Theme.of(dialogContext).colorScheme.error),
             child: Text(l10n.appGeneralDelete),
           ),
         ],

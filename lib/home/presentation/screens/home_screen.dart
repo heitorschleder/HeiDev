@@ -8,7 +8,9 @@ import '../../../core/di/injectable.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/routing/app_router.dart';
 import '../../../core/routing/route_repository.dart';
+import '../../../core/utils/currency_formatter.dart';
 import '../../../expenses/data/models/expense_model.dart';
+import '../../../expenses/domain/expense_category.dart';
 import '../../data/models/dashboard_data.dart';
 import '../../data/models/monthly_total.dart';
 import '../../domain/logic/home_state.dart';
@@ -86,8 +88,6 @@ class _DashboardBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fmt = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
-
     return RefreshIndicator(
       onRefresh: onRefresh,
       child: ListView(
@@ -95,14 +95,18 @@ class _DashboardBody extends StatelessWidget {
         children: [
           _SummaryCard(
             label: l10n.dashboardIncome,
-            value: fmt.format(dashboard.totalIncome),
+            value: formatBRL(dashboard.totalIncome),
             icon: Icons.account_balance_wallet_outlined,
             color: Theme.of(context).colorScheme.primary,
           ),
           const SizedBox(height: 12),
-          _ExpensesCard(dashboard: dashboard, fmt: fmt),
+          _ExpensesCard(dashboard: dashboard),
           const SizedBox(height: 12),
-          _BalanceCard(dashboard: dashboard, fmt: fmt),
+          _BalanceCard(dashboard: dashboard),
+          if (dashboard.categoryTotals.isNotEmpty) ...[
+            const SizedBox(height: 20),
+            _CategoryPieChart(categoryTotals: dashboard.categoryTotals),
+          ],
           if (dashboard.monthlyTotals.isNotEmpty) ...[
             const SizedBox(height: 20),
             _MonthlyChart(monthlyTotals: dashboard.monthlyTotals),
@@ -111,7 +115,7 @@ class _DashboardBody extends StatelessWidget {
             const SizedBox(height: 20),
             Text(l10n.dashboardDueSoon, style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 8),
-            ...dashboard.dueSoon.map((e) => _DueSoonTile(expense: e, fmt: fmt)),
+            ...dashboard.dueSoon.map((e) => _DueSoonTile(expense: e)),
           ],
           const SizedBox(height: 24),
           FilledButton.icon(
@@ -168,10 +172,9 @@ class _SummaryCard extends StatelessWidget {
 }
 
 class _ExpensesCard extends StatelessWidget {
-  const _ExpensesCard({required this.dashboard, required this.fmt});
+  const _ExpensesCard({required this.dashboard});
 
   final DashboardData dashboard;
-  final NumberFormat fmt;
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +187,7 @@ class _ExpensesCard extends StatelessWidget {
             Text(l10n.dashboardTotalExpenses, style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: 4),
             Text(
-              fmt.format(dashboard.totalExpenses),
+              formatBRL(dashboard.totalExpenses),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
@@ -193,14 +196,14 @@ class _ExpensesCard extends StatelessWidget {
                 Expanded(
                   child: _AmountLabel(
                     label: l10n.dashboardPaid,
-                    value: fmt.format(dashboard.totalPaid),
+                    value: formatBRL(dashboard.totalPaid),
                     color: Colors.green,
                   ),
                 ),
                 Expanded(
                   child: _AmountLabel(
                     label: l10n.dashboardOpen,
-                    value: fmt.format(dashboard.totalOpen),
+                    value: formatBRL(dashboard.totalOpen),
                     color: Theme.of(context).colorScheme.error,
                   ),
                 ),
@@ -214,10 +217,9 @@ class _ExpensesCard extends StatelessWidget {
 }
 
 class _BalanceCard extends StatelessWidget {
-  const _BalanceCard({required this.dashboard, required this.fmt});
+  const _BalanceCard({required this.dashboard});
 
   final DashboardData dashboard;
-  final NumberFormat fmt;
 
   @override
   Widget build(BuildContext context) {
@@ -238,7 +240,7 @@ class _BalanceCard extends StatelessWidget {
                   children: [
                     Text(l10n.dashboardBalance, style: Theme.of(context).textTheme.bodySmall),
                     Text(
-                      fmt.format(dashboard.balance),
+                      formatBRL(dashboard.balance),
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         color: balanceColor,
                         fontWeight: FontWeight.bold,
@@ -298,10 +300,9 @@ class _AmountLabel extends StatelessWidget {
 }
 
 class _DueSoonTile extends StatelessWidget {
-  const _DueSoonTile({required this.expense, required this.fmt});
+  const _DueSoonTile({required this.expense});
 
   final ExpenseModel expense;
-  final NumberFormat fmt;
 
   @override
   Widget build(BuildContext context) {
@@ -317,11 +318,127 @@ class _DueSoonTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(fmt.format(expense.amount), style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(formatBRL(expense.amount), style: const TextStyle(fontWeight: FontWeight.bold)),
             Text(daysLeft == 0 ? 'Hoje' : 'em $daysLeft d', style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _CategoryPieChart extends StatefulWidget {
+  const _CategoryPieChart({required this.categoryTotals});
+
+  final Map<ExpenseCategory, double> categoryTotals;
+
+  @override
+  State<_CategoryPieChart> createState() => _CategoryPieChartState();
+}
+
+class _CategoryPieChartState extends State<_CategoryPieChart> {
+  int? _touchedIndex;
+
+  static const _categoryColors = {
+    ExpenseCategory.casa: Color(0xFF4285F4),
+    ExpenseCategory.transporte: Color(0xFFFF6D00),
+    ExpenseCategory.alimentacao: Color(0xFF34A853),
+    ExpenseCategory.saude: Color(0xFFEA4335),
+    ExpenseCategory.lazer: Color(0xFF9C27B0),
+    ExpenseCategory.impostos: Color(0xFF795548),
+    ExpenseCategory.outros: Color(0xFF9E9E9E),
+  };
+
+  String _label(ExpenseCategory cat) => switch (cat) {
+    ExpenseCategory.casa => l10n.expenseCatCasa,
+    ExpenseCategory.transporte => l10n.expenseCatTransporte,
+    ExpenseCategory.alimentacao => l10n.expenseCatAlimentacao,
+    ExpenseCategory.saude => l10n.expenseCatSaude,
+    ExpenseCategory.lazer => l10n.expenseCatLazer,
+    ExpenseCategory.impostos => l10n.expenseCatImpostos,
+    ExpenseCategory.outros => l10n.expenseCatOutros,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final total = widget.categoryTotals.values.fold<double>(0, (s, v) => s + v);
+    if (total == 0) return const SizedBox.shrink();
+
+    final entries = widget.categoryTotals.entries.where((e) => e.value > 0).toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    final sections = List.generate(entries.length, (i) {
+      final entry = entries[i];
+      final pct = entry.value / total * 100;
+      final color = _categoryColors[entry.key] ?? const Color(0xFF9E9E9E);
+      final isTouched = i == _touchedIndex;
+      return PieChartSectionData(
+        value: entry.value,
+        color: color,
+        title: isTouched ? formatBRL(entry.value) : (pct >= 6 ? '${pct.toStringAsFixed(0)}%' : ''),
+        radius: isTouched ? 68.0 : 56.0,
+        titleStyle: TextStyle(
+          fontSize: isTouched ? 12 : 11,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      );
+    });
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.dashboardByCategory, style: Theme.of(context).textTheme.titleSmall),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 180,
+          child: PieChart(
+            PieChartData(
+              sections: sections,
+              sectionsSpace: 2,
+              centerSpaceRadius: 44,
+              borderData: FlBorderData(show: false),
+              pieTouchData: PieTouchData(
+                touchCallback: (event, response) {
+                  if (!event.isInterestedForInteractions || response == null || response.touchedSection == null) {
+                    setState(() => _touchedIndex = null);
+                    return;
+                  }
+                  setState(() => _touchedIndex = response.touchedSection!.touchedSectionIndex);
+                },
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 16,
+          runSpacing: 6,
+          children: List.generate(entries.length, (i) {
+            final entry = entries[i];
+            final pct = entry.value / total * 100;
+            final color = _categoryColors[entry.key] ?? const Color(0xFF9E9E9E);
+            final isTouched = i == _touchedIndex;
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  '${_label(entry.key)} · ${isTouched ? formatBRL(entry.value) : '${pct.toStringAsFixed(0)}%'}',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontWeight: isTouched ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+              ],
+            );
+          }),
+        ),
+      ],
     );
   }
 }
@@ -349,6 +466,14 @@ class _MonthlyChart extends StatelessWidget {
               maxY: chartMax,
               gridData: const FlGridData(show: false),
               borderData: FlBorderData(show: false),
+              barTouchData: BarTouchData(
+                touchTooltipData: BarTouchTooltipData(
+                  getTooltipItem: (group, groupIndex, rod, rodIndex) => BarTooltipItem(
+                    formatBRL(rod.toY),
+                    const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                  ),
+                ),
+              ),
               titlesData: FlTitlesData(
                 leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                 rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
