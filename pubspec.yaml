@@ -59,6 +59,13 @@ dev_dependencies:
   json_serializable: ^6.11.1
   mocktail: ^1.0.4
   fake_async: ^1.3.3
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  ios: true
+  android: false
+  image_path: "assets/images/heidev.png"
+  min_sdk_android: 21
 
 flutter:
   generate: true
