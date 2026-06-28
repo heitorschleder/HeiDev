@@ -199,6 +199,25 @@ class ExpenseRepository {
     }
   }
 
+  Future<List<ExpenseModel>> fetchExpensesForRange(DateTime start, DateTime end) async {
+    try {
+      final data = await _client
+          .from('expenses')
+          .select()
+          .gte('due_date', start.toIso8601String().substring(0, 10))
+          .lte('due_date', end.toIso8601String().substring(0, 10))
+          .order('due_date');
+      return (data as List).map((e) => ExpenseModel.fromJson(e)).toList();
+    } on PostgrestException catch (e) {
+      throw AppNetworkException(message: e.message, reason: AppNetworkExceptionReason.serverError);
+    } catch (_) {
+      throw const AppNetworkException(
+        message: 'Erro ao verificar duplicatas.',
+        reason: AppNetworkExceptionReason.unknown,
+      );
+    }
+  }
+
   static String _monthKey(DateTime dt) => '${dt.year}-${dt.month.toString().padLeft(2, '0')}-01';
 
   static String _paymentValue(ExpensePaymentMethod method) => switch (method) {

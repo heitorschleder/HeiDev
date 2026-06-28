@@ -371,6 +371,10 @@ class _CategoryDropdown extends StatelessWidget {
     ExpenseCategory.saude => l10n.expenseCatSaude,
     ExpenseCategory.lazer => l10n.expenseCatLazer,
     ExpenseCategory.impostos => l10n.expenseCatImpostos,
+    ExpenseCategory.vestuario => l10n.expenseCatVestuario,
+    ExpenseCategory.cosmeticos => l10n.expenseCatCosmeticos,
+    ExpenseCategory.assinaturas => l10n.expenseCatAssinaturas,
+    ExpenseCategory.pet => l10n.expenseCatPet,
     ExpenseCategory.outros => l10n.expenseCatOutros,
   };
 }

@@ -76,6 +76,14 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
         title: Text(l10n.expenseTitle),
         actions: [
           IconButton(
+            icon: const Icon(Icons.upload_file_outlined),
+            tooltip: l10n.importTitle,
+            onPressed: () async {
+              await AppRouter.push(RouteRepository.expenseImportScreen.makeNavigation());
+              unawaited(_vm.refresh());
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.list_alt_outlined),
             tooltip: l10n.billTemplatesTitle,
             onPressed: () async {
@@ -204,6 +212,10 @@ String _categoryLabel(ExpenseCategory cat) => switch (cat) {
   ExpenseCategory.saude => l10n.expenseCatSaude,
   ExpenseCategory.lazer => l10n.expenseCatLazer,
   ExpenseCategory.impostos => l10n.expenseCatImpostos,
+  ExpenseCategory.vestuario => l10n.expenseCatVestuario,
+  ExpenseCategory.cosmeticos => l10n.expenseCatCosmeticos,
+  ExpenseCategory.assinaturas => l10n.expenseCatAssinaturas,
+  ExpenseCategory.pet => l10n.expenseCatPet,
   ExpenseCategory.outros => l10n.expenseCatOutros,
 };
 

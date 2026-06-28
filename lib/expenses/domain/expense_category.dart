@@ -13,6 +13,14 @@ enum ExpenseCategory {
   lazer,
   @JsonValue('impostos')
   impostos,
+  @JsonValue('vestuario')
+  vestuario,
+  @JsonValue('cosmeticos')
+  cosmeticos,
+  @JsonValue('assinaturas')
+  assinaturas,
+  @JsonValue('pet')
+  pet,
   @JsonValue('outros')
   outros,
 }

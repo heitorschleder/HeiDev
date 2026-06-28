@@ -366,6 +366,10 @@ class _CategoryPieChartState extends State<_CategoryPieChart> {
     ExpenseCategory.saude: Color(0xFFEA4335),
     ExpenseCategory.lazer: Color(0xFF9C27B0),
     ExpenseCategory.impostos: Color(0xFF795548),
+    ExpenseCategory.vestuario: Color(0xFFE91E63),
+    ExpenseCategory.cosmeticos: Color(0xFFFF4081),
+    ExpenseCategory.assinaturas: Color(0xFF00BCD4),
+    ExpenseCategory.pet: Color(0xFF8BC34A),
     ExpenseCategory.outros: Color(0xFF9E9E9E),
   };
 
@@ -376,6 +380,10 @@ class _CategoryPieChartState extends State<_CategoryPieChart> {
     ExpenseCategory.saude => l10n.expenseCatSaude,
     ExpenseCategory.lazer => l10n.expenseCatLazer,
     ExpenseCategory.impostos => l10n.expenseCatImpostos,
+    ExpenseCategory.vestuario => l10n.expenseCatVestuario,
+    ExpenseCategory.cosmeticos => l10n.expenseCatCosmeticos,
+    ExpenseCategory.assinaturas => l10n.expenseCatAssinaturas,
+    ExpenseCategory.pet => l10n.expenseCatPet,
     ExpenseCategory.outros => l10n.expenseCatOutros,
   };
 

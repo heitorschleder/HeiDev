@@ -10,6 +10,7 @@ final StatefulShellRoute _shellRoute = StatefulShellRoute.indexedStack(
           childrenRoutes: [
             RouteRepository.expenseFormScreen.toGoRoute(),
             RouteRepository.billTemplatesScreen.toGoRoute(),
+            RouteRepository.expenseImportScreen.toGoRoute(),
           ],
         ),
       ],

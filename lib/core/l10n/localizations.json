@@ -81,6 +81,10 @@
       "catSaude":       { "pt": "Saúde", "en": "Health", "es": "Salud" },
       "catLazer":       { "pt": "Lazer", "en": "Leisure", "es": "Ocio" },
       "catImpostos":    { "pt": "Impostos", "en": "Taxes", "es": "Impuestos" },
+      "catVestuario":   { "pt": "Vestuário", "en": "Clothing", "es": "Vestimenta" },
+      "catCosmeticos":  { "pt": "Cosméticos", "en": "Cosmetics", "es": "Cosméticos" },
+      "catAssinaturas": { "pt": "Assinaturas", "en": "Subscriptions", "es": "Suscripciones" },
+      "catPet":         { "pt": "Pet", "en": "Pet", "es": "Mascota" },
       "catOutros":      { "pt": "Outros", "en": "Others", "es": "Otros" },
       "prioAlta":       { "pt": "Alta", "en": "High", "es": "Alta" },
       "prioMedia":      { "pt": "Média", "en": "Medium", "es": "Media" },
@@ -109,6 +113,20 @@
       "deleteConfirm": { "pt": "Excluir modelo?", "en": "Delete template?", "es": "¿Eliminar plantilla?" },
       "selectToLaunch":{ "pt": "Selecione modelos para lançar", "en": "Select templates to launch", "es": "Selecciona plantillas" },
       "launchSelected":{ "pt": "Lançar selecionados", "en": "Launch selected", "es": "Lanzar seleccionados" }
+    },
+    "import": {
+      "title":          { "pt": "Importar Nubank", "en": "Import Nubank", "es": "Importar Nubank" },
+      "selectFile":     { "pt": "Selecionar CSV do Nubank", "en": "Select Nubank CSV", "es": "Seleccionar CSV de Nubank" },
+      "dropzoneHint":   { "pt": "Exporte o extrato no app do Nubank (Cartão → Fatura → Exportar) e selecione o arquivo CSV.", "en": "Export the statement from the Nubank app (Card → Bill → Export) and select the CSV file.", "es": "Exporta el extracto desde la app de Nubank y selecciona el archivo CSV." },
+      "parseError":     { "pt": "Não foi possível processar o arquivo. Verifique se é um CSV exportado pelo Nubank.", "en": "Could not process the file. Make sure it is a CSV exported by Nubank.", "es": "No se pudo procesar el archivo. Verifica que sea un CSV de Nubank." },
+      "noItemsFound":   { "pt": "Nenhuma despesa encontrada no arquivo.", "en": "No expenses found in the file.", "es": "No se encontraron gastos en el archivo." },
+      "duplicate":      { "pt": "Possível duplicata", "en": "Possible duplicate", "es": "Posible duplicado" },
+      "skip":           { "pt": "Pular", "en": "Skip", "es": "Omitir" },
+      "confirm":        { "pt": "Confirmar", "en": "Confirm", "es": "Confirmar" },
+      "doneTitle":      { "pt": "Importação concluída", "en": "Import complete", "es": "Importación completada" },
+      "confirmedCount": { "pt": "confirmadas", "en": "confirmed", "es": "confirmadas" },
+      "skippedCount":   { "pt": "puladas", "en": "skipped", "es": "omitidas" },
+      "viewExpenses":   { "pt": "Ver despesas", "en": "View expenses", "es": "Ver gastos" }
     },
     "appGeneral": {
       "loading": { "pt": "Carregando...", "en": "Loading...", "es": "Cargando..." },

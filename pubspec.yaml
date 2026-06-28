@@ -50,6 +50,10 @@ dependencies:
   json_annotation: ^4.9.0
   uuid: ^4.5.0
 
+  # Import
+  file_picker: ^8.0.0
+  csv: ^5.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
